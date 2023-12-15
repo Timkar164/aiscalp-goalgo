@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Charts</title>
+	<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/jquery"></script>
+	<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+<div id="container" style="height: 1200px"></div>
+
+
+<script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+    var ROOT_PATH = '/';
+    var option;
+
+    function splitData(rawData) {
+      var categoryData = [];
+      var values = [];
+      var volumns = [];
+      var values_volumns = [];
+      for (var i = 0; i < rawData.length; i++) {
+        categoryData.push(rawData[i].splice(0, 1)[0]);
+        values.push(rawData[i]);
+        volumns.push(rawData[i][4]);
+        values_volumns.push(rawData[i][5]);
+      }
+      return {
+        categoryData: categoryData,
+        values: values,
+        volumns: volumns,
+        values_volumns: values_volumns
+      };
+    }
+
+    //$.get("/chart_data"+"{{data.get_request}}", function (rawData) {
+    $.get("/static/data.json", function (rawData) {
+      //var data = splitData(JSON.parse(rawData));
+      
+      let data = splitData(rawData);
+      console.log(data);
+      myChart.setOption(
+        (option = {
+          animation: false,
+          legend: {
+            bottom: 10,
+            left: 'center',
+            data: ['UVXY', 'Assets Under Management', 'Assets Under Management/UVXY', 'Assets Under Management/UVXY']
+          },
+          tooltip: {
+
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross'
+            },
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            position: function (pos, params, el, elRect, size) {
+              var obj = { top: 10 };
+              obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
+              return obj;
+            },
+            formatter: function (params) {
+              
+              return (params);
+            },
+            extraCssText: 'width: 170px'
+          },
+          axisPointer: {
+            link: { xAxisIndex: 'all' },
+            label: {
+              backgroundColor: '#777'
+            }
+          },
+          toolbox: {
+            feature: {
+              dataZoom: {
+                yAxisIndex: false
+              },
+              brush: {
+                type: ['lineX', 'clear']
+              }
+            }
+          },
+          brush: {
+            xAxisIndex: 'all',
+            brushLink: 'all',
+            outOfBrush: {
+              colorAlpha: 0.1
+            }
+          },
+          grid: [
+            {
+              left: '10%',
+              right: '8%',
+              height: '200px',
+
+            },
+            {
+              left: '10%',
+              right: '8%',
+              top: '310px',
+              height: '200px'
+            },
+            {
+              left: '10%',
+              right: '8%',
+              top: '560px',
+              height: '200px'
+            },
+            {
+              left: '10%',
+              right: '8%',
+              top: '820px',
+              height: '200px'
+            }
+            
+          ],
+          xAxis: [
+            {
+              type: 'category',
+              data: data.categoryData,
+              scale: true,
+              boundaryGap: false,
+              axisLine: { onZero: false },
+              splitLine: { show: false },
+              splitNumber: 20,
+              min: 'dataMin',
+              max: 'dataMax',
+              axisPointer: {
+                z: 100,
+                label: {
+                  formatter: function (params) {
+                    var seriesValue = "";
+                    try {
+                      seriesValue = '\n\n' + params.seriesData[0].value[1].toFixed(3);
+
+                    } catch (e) {}
+                    return (
+                      params.value +
+                      (seriesValue != null
+                        ?  echarts.format.addCommas(seriesValue) 
+                        : '')
+                    );
+                  }
+                }
+              }
+            },
+            {
+              type: 'category',
+              gridIndex: 1,
+              data: data.categoryData,
+              scale: true,
+              boundaryGap: false,
+              axisLine: { onZero: false },
+              axisTick: { show: false },
+              splitLine: { show: false },
+              axisLabel: { show: false },
+              splitNumber: 200,
+              min: 'dataMin',
+              max: 'dataMax',
+              axisPointer: {
+                label: {
+                  formatter: function (params) {
+                    var seriesValue = (params.seriesData[0] || {}).value;
+                    return (
+                      //params.value +
+                      (seriesValue != null
+                        ? echarts.format.addCommas(seriesValue)
+                        : '')
+                    );
+                  }
+                }
+              }
+            },
+            {
+              type: 'category',
+              gridIndex: 2,
+              data: data.categoryData,
+              scale: true,
+              boundaryGap: false,
+              axisLine: { onZero: false },
+              axisTick: { show: false },
+              splitLine: { show: false },
+              axisLabel: { show: false },
+              splitNumber: 20,
+              min: 'dataMin',
+              max: 'dataMax',
+              axisPointer: {
+                label: {
+                  formatter: function (params) {
+                    var seriesValue = (params.seriesData[0] || {}).value;
+                    return (
+                      //params.value +
+                      (seriesValue != null
+                        ? echarts.format.addCommas(seriesValue)
+                        : '')
+                    );
+                  }
+                }
+              }
+            },
+            {
+              type: 'category',
+              gridIndex: 3,
+              data: data.categoryData,
+              scale: true,
+              boundaryGap: false,
+              axisLine: { onZero: false },
+              axisTick: { show: false },
+              splitLine: { show: false },
+              axisLabel: { show: false },
+              splitNumber: 20,
+              min: 'dataMin',
+              max: 'dataMax',
+              axisPointer: {
+                label: {
+                  formatter: function (params) {
+                    var seriesValue = (params.seriesData[0] || {}).value;
+                    return (
+                      //params.value +
+                      (seriesValue != null
+                        ? echarts.format.addCommas(seriesValue)
+                        : '')
+                    );
+                  }
+                }
+              }
+              
+            }
+          ],
+          yAxis: [
+            {
+              scale: true,
+              splitArea: {
+                show: true
+              }
+            },
+            {
+              scale: true,
+              gridIndex: 1,
+              splitNumber: 2,
+            },
+            {
+              scale: true,
+              gridIndex: 2,
+              splitNumber: 3,
+            },
+            {
+              scale: true,
+              gridIndex: 3,
+              splitNumber: 4,
+            }
+          ],
+          dataZoom: [
+            {
+              type: 'inside',
+              xAxisIndex: [0, 1, 2, 3],
+              start: 98,
+              end: 100
+            },
+            {
+              show: false,
+              xAxisIndex: [0, 1, 2, 3],
+              type: 'slider',
+              top: '91%',
+              start: 98,
+              end: 100
+            }
+          ],
+          series: [
+            {
+              name: 'UVXY',
+              type: 'candlestick',
+              data: data.values,
+              itemStyle: {
+                normal: {
+                  color: '#06B800',
+                  color0: '#FA0000',
+                  borderColor: null,
+                  borderColor0: null
+                }
+              },
+              /*
+              tooltip: {
+                formatter: function (param) {
+                  param = param[0];
+                  return [
+                    'Date: ' + param.name + '<hr size=1 style="margin: 3px 0">',
+                    'Open: ' + param.data[0] + '<br/>',
+                    'Close: ' + param.data[1] + '<br/>',
+                    'Lowest: ' + param.data[2] + '<br/>',
+                    'Highest: ' + param.data[3] + '<br/>'
+                    
+                  ].join('');
+                }
+              }
+              */
+            },
+            {
+              name: 'Assets Under Management',
+              type: 'line',
+              xAxisIndex: 1,
+              yAxisIndex: 1,
+              data: data.volumns
+            },
+            {
+              name: 'Assets Under Management/UVXY',
+              type: 'line',
+              xAxisIndex: 2,
+              yAxisIndex: 2,
+              data: data.values_volumns
+            },
+            {
+              name: 'Assets Under Management/UVXY',
+              type: 'line',
+              xAxisIndex: 3,
+              yAxisIndex: 3,
+              data: data.values_volumns
+            }
+          ]
+        }),
+        true
+      );
+    });
+
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+  </script>
+</body>
+</html>

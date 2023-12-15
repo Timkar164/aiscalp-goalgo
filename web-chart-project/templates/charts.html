@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Charts</title>
+	<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/jquery"></script>
+	<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+<div id="container" style=""></div>
+
+
+<script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = null;
+    var app = {};
+    var ROOT_PATH = '/';
+    var option;
+
+    $.get("/chart_data"+"{{data.get_request}}", function (rawData) {
+    //$.get("/static/data.json", function (rawData) {
+      //let data = splitData(JSON.parse(rawData));
+      //let data = splitData(rawData);
+      let data = rawData;
+      console.log(data);
+
+      let xAxis = [];
+      let yAxis = [];
+      let grid = [];
+      let series = [];
+      let index = 0;
+      let data_name = [];
+      for (const [key, value] of Object.entries(data)) {
+        if (key != "categoryData"){
+          data_name.push(value.name);
+          //console.log(value);
+          
+
+          yAxis.push(
+            {
+              scale: true,
+              gridIndex: index,
+              splitNumber: index,
+            },
+          );
+
+          grid.push(
+            {
+              left: '10%',
+              right: '8%',
+              top: 10+(250*index)+'px',
+              height: '200px'
+            }
+          );     
+          let axisPointer_label = null;
+
+          if (key.split("_").at(-1) == "candle"){
+            series.push(
+              {
+                name: value.name,
+                type: 'candlestick',
+                data: value.value,
+                xAxisIndex: index,
+                yAxisIndex: index,
+                itemStyle: {
+                  normal: {
+                    color: '#FA0000',
+                    color0: '#06B800',
+                    borderColor: null,
+                    borderColor0: null
+                  }
+                },
+              }
+            );
+          } else {
+            series.push(
+              {
+                name: value.name,
+                type: 'line',
+                xAxisIndex: index,
+                yAxisIndex: index,
+                data: value.value
+              }
+            );
+            axisPointer_label = {
+              formatter: function (params) {
+                var seriesValue = (params.seriesData[0] || {}).value;
+                return (
+                  //params.value +
+                  (seriesValue != null
+                    ? echarts.format.addCommas(seriesValue)
+                    : '')
+                );
+              }
+            }
+          }
+
+
+          xAxis.push(
+            {
+              type: 'category',
+              gridIndex: index,
+              data: data.categoryData,
+              scale: true,
+              boundaryGap: false,
+              axisLine: { onZero: false },
+              axisTick: { show: false },
+              splitLine: { show: false },
+              axisLabel: { show: false },
+              splitNumber: 20,
+              min: 'dataMin',
+              max: 'dataMax',
+              axisPointer: {
+                label: axisPointer_label
+              }
+            }
+          );
+          
+          ++index;
+        } 
+      }
+
+      let xAxisIndex_dataZoom = [];
+      dom.style.height = 50+250*index+"px";
+      myChart = echarts.init(dom, null, {
+        renderer: 'canvas',
+        useDirtyRect: false
+      });
+      
+
+      xAxis.at(-1).axisTick.show = true;
+      xAxis.at(-1).axisLabel.show = true;
+
+      myChart.setOption(
+        (option = {
+          animation: false,
+          legend: {
+            bottom: 10,
+            left: 'center',
+            data: data_name
+          },
+          tooltip: {
+
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross'
+            },
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            position: function (pos, params, el, elRect, size) {
+              var obj = { top: 10 };
+              obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
+              return obj;
+            },
+            formatter: function (params) {
+              
+              return (params);
+            },
+            extraCssText: 'width: 170px'
+          },
+          axisPointer: {
+            link: { xAxisIndex: 'all' },
+            label: {
+              backgroundColor: '#777'
+            }
+          },
+          toolbox: {
+            feature: {
+              dataZoom: {
+                yAxisIndex: false
+              },
+              brush: {
+                type: ['lineX', 'clear']
+              }
+            }
+          },
+          brush: {
+            xAxisIndex: 'all',
+            brushLink: 'all',
+            outOfBrush: {
+              colorAlpha: 0.1
+            }
+          },
+          grid: grid,
+          xAxis: xAxis,
+          yAxis: yAxis,
+          dataZoom: [
+            {
+              type: 'inside',
+              xAxisIndex: [0, 1, 2, 3, 4, 5],
+              start: 98,
+              end: 100
+            },
+            {
+              show: false,
+              xAxisIndex: [0, 1, 2, 3, 4, 5],
+              type: 'slider',
+              top: '91%',
+              start: 98,
+              end: 100
+            }
+          ],
+          series: series
+        }),
+        true
+      );
+      
+    });
+
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+  </script>
+</body>
+</html>

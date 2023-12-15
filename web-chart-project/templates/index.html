@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Create</title>
+	<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/jquery"></script>
+	<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+	
+</head>
+<body>
+<div class="create_block">
+	<h1>Конструктор графика</h1>
+	<form name="create_form">
+		<div class="field_block">
+			
+		</div>
+		<a href="#" class="btn btn-primary add_chart_button" onclick="add_field()">Добавить график</a><br><br>
+
+		
+	</form>
+	<button class="btn btn-outline-dark click_button" onclick="click_button()">Создать</button>
+</div>
+
+
+<div id="container" style=""></div>
+<script type="text/javascript">
+
+function click_button(){
+	let form = document.forms.create_form;
+	let formData = new FormData(form);
+	let pair_array = []
+	for (let pair of formData.entries()) {
+		pair_array.push(pair);
+	}
+
+	let res_array = []
+	for (let i = 0; i < pair_array.length; i+=2) {
+		let tiker = formData.get(pair_array[i][0]);
+		let tiker_data = formData.get(pair_array[i+1][0]);
+    let chart_num = pair_array[i][0].split("_")[1];
+		res_array.push([tiker, tiker_data, chart_num]);
+	}
+
+	let get_request = "?";
+	for (let i = 0; i < res_array.length; i++) {
+		get_request += i+"="+res_array[i][0]+"|"+res_array[i][1]+"|"+res_array[i][2]+"&"
+	}
+
+	get_request = get_request.slice(0, -1);
+
+	document.querySelector(".create_block").classList.add("none");
+	create_chart(get_request);
+}
+
+
+
+function create_chart(get_request){
+	var dom = document.getElementById('container');
+    var myChart = null;
+    var app = {};
+    var ROOT_PATH = '/';
+    var option;
+
+    $.get("/chart_data"+get_request, function (rawData) {
+    //$.get("/static/data.json", function (rawData) {
+      //let data = splitData(JSON.parse(rawData));
+      //let data = splitData(rawData);
+      let data = rawData;
+      console.log(data);
+
+      let xAxis = [];
+      let yAxis = [];
+      let grid = [];
+      let series = [];
+      let index = 0;
+      let data_name = [];
+      for (const [key, value] of Object.entries(data)) {
+        if (key != "categoryData"){
+          data_name.push(value.name);
+          //console.log(value);
+          
+
+          yAxis.push(
+            {
+              scale: true,
+              gridIndex: index,
+              splitNumber: index,
+            },
+          );
+
+          grid.push(
+            {
+              left: '10%',
+              right: '8%',
+              top: 10+(250*index)+'px',
+              height: '200px'
+            }
+          );     
+          let axisPointer_label = null;
+
+          if (key.split("_").at(-1) == "candle"){
+            series.push(
+              {
+                name: value.name,
+                type: 'candlestick',
+                data: value.value,
+                xAxisIndex: index,
+                yAxisIndex: index,
+                itemStyle: {
+                  normal: {
+                    color: '#FA0000',
+                    color0: '#06B800',
+                    borderColor: null,
+                    borderColor0: null
+                  }
+                },
+              }
+            );
+          } else {
+            series.push(
+              {
+                name: value.name,
+                type: 'line',
+                //xAxisIndex: index,
+                //yAxisIndex: index,
+                xAxisIndex: value.chart_num,
+                yAxisIndex: value.chart_num,
+                data: value.value
+              }
+            );
+            axisPointer_label = {
+              formatter: function (params) {
+                var seriesValue = (params.seriesData[0] || {}).value;
+                return (
+                  //params.value +
+                  (seriesValue != null
+                    ? echarts.format.addCommas(seriesValue)
+                    : '')
+                );
+              }
+            }
+          }
+
+
+          xAxis.push(
+            {
+              type: 'category',
+              gridIndex: index,
+              data: data.categoryData,
+              scale: true,
+              boundaryGap: false,
+              axisLine: { onZero: false },
+              axisTick: { show: false },
+              splitLine: { show: false },
+              axisLabel: { show: false },
+              splitNumber: 20,
+              min: 'dataMin',
+              max: 'dataMax',
+              axisPointer: {
+                label: axisPointer_label
+              }
+            }
+          );
+          
+          ++index;
+        } 
+      }
+
+      let xAxisIndex_dataZoom = [];
+      dom.style.height = 50+250*index+"px";
+      myChart = echarts.init(dom, null, {
+        renderer: 'canvas',
+        useDirtyRect: false
+      });
+      
+
+      xAxis.at(-1).axisTick.show = true;
+      xAxis.at(-1).axisLabel.show = true;
+
+      myChart.setOption(
+        (option = {
+          animation: false,
+          legend: {
+            bottom: 10,
+            left: 'center',
+            data: data_name
+          },
+          tooltip: {
+
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross'
+            },
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            position: function (pos, params, el, elRect, size) {
+              var obj = { top: 10 };
+              obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
+              return obj;
+            },
+            formatter: function (params) {
+              
+              return (params);
+            },
+            extraCssText: 'width: 170px'
+          },
+          axisPointer: {
+            link: { xAxisIndex: 'all' },
+            label: {
+              backgroundColor: '#777'
+            }
+          },
+          toolbox: {
+            feature: {
+              dataZoom: {
+                yAxisIndex: false
+              },
+              brush: {
+                type: ['lineX', 'clear']
+              }
+            }
+          },
+          brush: {
+            xAxisIndex: 'all',
+            brushLink: 'all',
+            outOfBrush: {
+              colorAlpha: 0.1
+            }
+          },
+          grid: grid,
+          xAxis: xAxis,
+          yAxis: yAxis,
+          dataZoom: [
+            {
+              type: 'inside',
+              xAxisIndex: [0, 1, 2, 3, 4, 5],
+              start: 98,
+              end: 100
+            },
+            {
+              show: false,
+              xAxisIndex: [0, 1, 2, 3, 4, 5],
+              type: 'slider',
+              top: '91%',
+              start: 98,
+              end: 100
+            }
+          ],
+          series: series
+        }),
+        true
+      );
+      
+    });
+
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    //window.addEventListener('resize', myChart.resize);
+}
+
+
+function create_field(id_field, refer_field){
+  if (refer_field === null) {
+    div = document.createElement("div");
+    div.classList.add("field_"+id_field);
+    div.classList.add("form_field");
+    id_block = id_field+"_0";
+  } else {
+    div = document.querySelector('.field_'+refer_field);
+    let block_length = div.querySelectorAll(".field_chart").length;
+    id_block = refer_field+"_"+block_length
+  }
+  
+	
+	div.insertAdjacentHTML('beforeend', `
+    <div class="field_chart">
+  		<input class="form-control field_chart_input" type="text" required placeholder="Tiker" name="tiker_`+id_block+`">
+
+      <select class="form-select field_chart_select" name="data_`+id_block+`">
+        <option value="candle">Свечка</option>
+        <option value="pr_vwap">pr_vwap</option>
+        <option value="pr_vwap_b">pr_vwap_b</option>
+        <option value="pr_vwap_s">pr_vwap_s</option>
+        <option value="pr_change">pr_change</option>
+        <option value="trades">trades</option>
+        <option value="trades_b">trades_b</option>
+        <option value="trades_s">trades_s</option>
+        <option value="vol">vol</option>
+        <option value="vol_b">vol_b</option>
+        <option value="vol_s">vol_s</option>
+        <option value="val">val</option>
+        <option value="val_b">val_b</option>
+        <option value="val_s">val_s</option>
+        <option value="disb">disb</option>
+        <option value="pr_std">pr_std</option>
+        <option value="put_orders">put_orders</option>
+        <option value="cancel_orders">cancel_orders</option>
+        <option value="put_orders_b">put_orders_b</option>
+        <option value="put_orders_s">put_orders_s</option>
+        <option value="cancel_orders_b">cancel_orders_b</option>
+        <option value="cancel_orders_s">cancel_orders_s</option>
+        <option value="put_vol">put_vol</option>
+        <option value="cancel_vol">cancel_vol</option>
+        <option value="put_vol_b">put_vol_b</option>
+        <option value="cancel_vol_b">cancel_vol_b</option>
+        <option value="cancel_vol_s">cancel_vol_s</option>
+        <option value="put_val">put_val</option>
+        <option value="cancel_val">cancel_val</option>
+        <option value="put_val_b">put_val_b</option>
+        <option value="put_val_s">put_val_s</option>
+        <option value="cancel_val_b">cancel_val_b</option>
+        <option value="cancel_val_s">cancel_val_s</option>
+        <option value="put_vwap_b">put_vwap_b</option>
+        <option value="put_vwap_s">put_vwap_s</option>
+        <option value="cancel_vwap_b">cancel_vwap_b</option>
+        <option value="cancel_vwap_s">cancel_vwap_s</option>
+        <option value="spread_bbo">spread_bbo</option>
+        <option value="spread_lv10">spread_lv10</option>
+        <option value="spread_1mio">spread_1mio</option>
+        <option value="levels_b">levels_b</option>
+        <option value="levels_s">levels_s</option>
+        <option value="vol_b">vol_b</option>
+        <option value="vol_s">vol_s</option>
+        <option value="imbalance_vol">imbalance_vol</option>
+        <option value="imbalance_vol_bbo">imbalance_vol_bbo</option>
+        <option value="imbalance_val">imbalance_val</option>
+        <option value="imbalance_val_bbo">imbalance_val_bbo</option>
+        <option value="vwap_b">vwap_b</option>
+        <option value="vwap_s">vwap_s</option>
+        <option value="vwap_b_1mio">vwap_b_1mio</option>
+        <option value="vwap_s_1mio">vwap_s_1mio</option>
+      </select>
+    </div>
+		`);
+  if (refer_field === null) {
+    div.insertAdjacentHTML('afterbegin', `<a href="#" class="btn btn-outline-success add_field_button" onclick="add_field('`+id_field+`')">+</a>`)
+  }
+	return div
+	
+
+}
+function add_field(refer_field=null) {
+	let id_field = document.querySelectorAll(".form_field").length;
+	let div = create_field(id_field, refer_field);
+  if (refer_field === null) {
+    document.querySelector(".field_block").appendChild(div);
+  }
+	
+}
+</script>
+</body>
+</html>

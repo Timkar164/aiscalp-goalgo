@@ -1,0 +1,60 @@
+reference	secid	код инструмента
+reference	ts	дата и время
+trades	pr_open	цена открытия
+trades	pr_high	максимальная цена за период
+trades	pr_low	минимальная цена за период
+trades	pr_close	последняя цена за период
+trades	pr_vwap	средневзвешенная цена
+trades	pr_change	изменение цены за период, %
+trades	trades	кол-во сделок
+trades	vol	объем в лотах
+trades	val	объем в рублях
+trades	disb	соотношение объема покупок и продаж
+trades	pr_std	стандартное отклонение цены
+trades	pr_vwap_b	средневзвешенная цена покупки
+trades	pr_vwap_s	средневзвешенная цена продажи
+trades	trades_b	кол-во сделок на покупку
+trades	trades_s	кол-во сделок на продажу
+trades	vol_b	объем покупок в лотах
+trades	vol_s	объем продаж в лотах
+trades	val_b	объем покупок в руб
+trades	val_s	объем продаж в руб
+orders	put_orders	кол-во поставленных заявок в стакан
+orders	cancel_orders	кол-во снятых заявок
+orders	put_vol	объем завок, поставленных в стакан
+orders	put_val	объем завок, поставленных в стакан (руб)
+orders	cancel_vol	объем снятых заявок
+orders	cancel_val	объем снятых заявок (руб)
+orders	put_orders_b	кол-во поставленных заявок (покупка)
+orders	put_orders_s	кол-во поставленных заявок (продажа)
+orders	cancel_orders_b	кол-во снятых заявок (покупка)
+orders	cancel_orders_s	кол-во снятых заявок (продажа)
+orders	put_vol_b	объем завок поставленных в стакан (покупка)
+orders	put_vol_s	объем завок поставленных в стакан (продажа)
+orders	cancel_vol_b	объем снятых заявок (покупка)
+orders	cancel_vol_s	объем снятых заявок (продажа)
+orders	put_val_b	объем завок поставленных в стакан (покупка, руб)
+orders	put_val_s	объем завок поставленных в стакан (продажа, руб)
+orders	cancel_val_b	объем снятых заявок (покупка, руб)
+orders	cancel_val_s	объем снятых заявок (продажа, руб)
+orders	cancel_vwap_b	Средневзвешенная цена отмененных заявок (покупка)
+orders	cancel_vwap_s	Средневзвешенная цена отмененных заявок (продажа)
+orders	put_vwap_b	Средневзвешенная цена заявок (покупка)
+orders	put_vwap_s	Средневзвешенная цена заявок (продажа)
+orderbook	spread_bbo	спред между лучшей ценой покупки и продажи
+orderbook	spread_lvl10	спред между 10ым уровнем цен покупки и продажи
+orderbook	spread_1mio	спред на 1 млн руб
+orderbook	levels_b	кол-во уровней цен в стакане (покупка)
+orderbook	levels_s	кол-во уровней цен в стакане (продажа)
+orderbook	vol_b	совокупный объем заявок в стакане на всех уровнях (покупка)
+orderbook	vol_s	совокупный объем заявок в стакане на всех уровнях (продажа)
+orderbook	val_b	совокупный объем заявок в стакане на всех уровнях (покупка), руб
+orderbook	val_s	совокупный объем заявок в стакане на всех уровнях (продажа), руб
+orderbook	imbalance_vol_bbo	дисбаланс объема на лучших ценах
+orderbook	imbalance_val_bbo	дисбаланс объема (руб) по лучшим ценам
+orderbook	imbalance_vol	дисбаланс объема на всем стакане (все уровни)
+orderbook	imbalance_val	дисбаланс объема (руб) на всем стакане (все уровни)
+orderbook	vwap_b	средневзвешенная цена покупки в стакане
+orderbook	vwap_s	средневзвешенная цена продажи в стакане
+orderbook	vwap_b_1mio	цена покупки актива на 1 млн руб
+orderbook	vwap_s_1mio	цена продажи актива на 1 млн руб

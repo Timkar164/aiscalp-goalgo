@@ -1,0 +1,405 @@
+<section class="section profile">
+    <div class="row">
+      <div class="col-xl-12">
+
+        <div class="card">
+          <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+
+            <img src="assets/img/profile-img.jpg" alt="Профиль" class="rounded-circle">
+            <h2><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{user.name  || ''}}</font></font></h2>
+            <h3><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{user.email || ''}}</font></font></h3>
+            <div class="social-links mt-2">
+              <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+              <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+              <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+              <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Добавить счет</font></font></h5>
+            <!-- General Form Elements -->
+            <form>
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Брокер</font></font></label>
+                <div class="col-sm-10">
+                  <select class="form-select" aria-label="Пример выбора по умолчанию" [(ngModel)]="broker" [ngModelOptions]="{standalone: true}">
+                    <option selected=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Достпуные</font></font></option>
+                    <option value="Tinkoff"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Tinkoff</font></font></option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Api key</font></font></label>
+                <div class="col-sm-10">
+                  <input type="password" class="form-control" [(ngModel)]="apikey" [ngModelOptions]="{standalone: true}">
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Ограничение капитала</font></font></label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" [(ngModel)]="money" [ngModelOptions]="{standalone: true}">
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-sm-10">
+                  <button type="submit" class="btn btn-primary" (click)="addAccaunt()">Добавить</button>
+                </div>
+              </div>
+            </form><!-- End General Form Elements -->
+
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Мои счета</font></font></h5>
+
+            <!-- Default Table -->
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">№</font></font></th>
+                <th scope="col"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Брокер</font></font></th>
+                <th scope="col"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Ограничение</font></font></th>
+                <th scope="col"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Дата добавления</font></font></th>
+                <th scope="col"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"></font></font></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let account of user.accounts; index as i">
+                <th scope="row"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{i+1}}</font></font></th>
+                <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{account.broker}}</font></font></td>
+                <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{account.money}}</font></font></td>
+                <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{dataToStr(account.createtime)}}</font></font></td>
+                <td><font style="vertical-align: inherit;" (click)="deletAccount(account)"><font style="vertical-align: inherit;">
+                  <div class="icon">
+                    <i class="bi bi-basket"></i>
+                  </div>
+                </font></font></td>
+              </tr>
+
+              </tbody>
+            </table>
+            <!-- End Default Table Example -->
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Добавить Endpoint</font></font></h5>
+            <!-- General Form Elements -->
+            <form>
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Название</font></font></label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" [(ngModel)]="endpointname" [ngModelOptions]="{standalone: true}">
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Url</font></font></label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" [(ngModel)]="endpointurl" [ngModelOptions]="{standalone: true}">
+                </div>
+              </div>
+
+            </form><!-- End General Form Elements -->
+            <div class="row mb-3">
+              <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary" (click)="addEndpoint()">Добавить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Мои endpoints</font></font></h5>
+
+            <!-- Default Table -->
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">№</font></font></th>
+                <th scope="col"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Название</font></font></th>
+                <th scope="col"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Url</font></font></th>
+                <th scope="col"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Дата добавления</font></font></th>
+                <th scope="col"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"></font></font></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr  *ngFor="let endpoints of user.endpoints; index as i">
+                <th scope="row"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{i+1}}</font></font></th>
+                <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{endpoints.name}}</font></font></td>
+                <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{endpoints.url}}</font></font></td>
+                <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{dataToStr(endpoints.createtime)}}</font></font></td>
+                <td><font style="vertical-align: inherit;" (click)="deletEndpoint(endpoints)"><font style="vertical-align: inherit;">
+                <div class="icon">
+                  <i class="bi bi-basket"></i>
+                </div>
+                </font></font></td>
+              </tr>
+
+              </tbody>
+            </table>
+            <!-- End Default Table Example -->
+          </div>
+        </div>
+      </div>
+      <!--<div class="col-xl-8">
+
+        <div class="card">
+          <div class="card-body pt-3">
+
+            <ul class="nav nav-tabs nav-tabs-bordered" role="tablist">
+
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview" aria-selected="true" role="tab"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Обзор</font></font></button>
+              </li>
+
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit" aria-selected="false" tabindex="-1" role="tab"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Редактировать профиль</font></font></button>
+              </li>
+
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings" aria-selected="false" tabindex="-1" role="tab"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Настройки</font></font></button>
+              </li>
+
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password" aria-selected="false" tabindex="-1" role="tab"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Изменить пароль</font></font></button>
+              </li>
+
+            </ul>
+            <div class="tab-content pt-2">
+
+              <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
+                <h5 class="card-title"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">О</font></font></h5>
+                <p class="small fst-italic"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. </font><font style="vertical-align: inherit;">Tempora libero non est unde veniam est qui dolor. </font><font style="vertical-align: inherit;">Ut sunt iure rerum quae quisquam autem Eveniet Perspiciatis Odit. </font><font style="vertical-align: inherit;">Fuga sequi sed ea saepe at unde.</font></font></p>
+
+                <h5 class="card-title"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Детали профиля</font></font></h5>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label "><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Полное имя</font></font></div>
+                  <div class="col-lg-9 col-md-8"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Кевин Андерсон</font></font></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Компания</font></font></div>
+                  <div class="col-lg-9 col-md-8"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Люейльвиц, Високи и Лейшке</font></font></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Работа</font></font></div>
+                  <div class="col-lg-9 col-md-8"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Веб-дизайнер</font></font></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Страна</font></font></div>
+                  <div class="col-lg-9 col-md-8"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">США</font></font></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Адрес</font></font></div>
+                  <div class="col-lg-9 col-md-8"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">A108 Адам Стрит, Нью-Йорк, NY 535022</font></font></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Телефон</font></font></div>
+                  <div class="col-lg-9 col-md-8"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">(436) 486-3538 x29071</font></font></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Электронная почта</font></font></div>
+                  <div class="col-lg-9 col-md-8"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">k.anderson@example.com</font></font></div>
+                </div>
+
+              </div>
+
+              <div class="tab-pane fade profile-edit pt-3" id="profile-edit" role="tabpanel">
+
+
+                <form>
+                  <div class="row mb-3">
+                    <label for="profileImage" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Изображение профиля</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <img src="assets/img/profile-img.jpg" alt="Профиль">
+                      <div class="pt-2">
+                        <a href="#" class="btn btn-primary btn-sm" title="Загрузите новое изображение профиля"><i class="bi bi-upload"></i></a>
+                        <a href="#" class="btn btn-danger btn-sm" title="Удалить изображение моего профиля"><i class="bi bi-trash"></i></a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="fullName" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Полное имя</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="fullName" type="text" class="form-control" id="fullName" value="Kevin Anderson">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="about" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">О</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <textarea name="about" class="form-control" id="about" style="height: 100px">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</textarea>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="company" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Компания</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="company" type="text" class="form-control" id="company" value="Lueilwitz, Wisoky and Leuschke">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="Job" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Работа</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="job" type="text" class="form-control" id="Job" value="Web Designer">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="Country" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Страна</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="country" type="text" class="form-control" id="Country" value="USA">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="Address" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Адрес</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="address" type="text" class="form-control" id="Address" value="A108 Adam Street, New York, NY 535022">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="Phone" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Телефон</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="phone" type="text" class="form-control" id="Phone" value="(436) 486-3538 x29071">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="Email" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Электронная почта</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="email" type="email" class="form-control" id="Email" value="k.anderson@example.com">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="Twitter" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профиль в Твиттере</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="twitter" type="text" class="form-control" id="Twitter" value="https://twitter.com/#">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="Facebook" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профиль Facebook</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="facebook" type="text" class="form-control" id="Facebook" value="https://facebook.com/#">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="Instagram" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профиль в Инстаграм</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="instagram" type="text" class="form-control" id="Instagram" value="https://instagram.com/#">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="Linkedin" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Профиль в LinkedIn</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="linkedin" type="text" class="form-control" id="Linkedin" value="https://linkedin.com/#">
+                    </div>
+                  </div>
+
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-primary"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Сохранить изменения</font></font></button>
+                  </div>
+                </form>
+
+              </div>
+
+              <div class="tab-pane fade pt-3" id="profile-settings" role="tabpanel">
+
+
+                <form>
+
+                  <div class="row mb-3">
+                    <label for="fullName" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Уведомления по электронной почте</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="changesMade" checked="">
+                        <label class="form-check-label" for="changesMade"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                          Изменения, внесенные в вашу учетную запись
+                        </font></font></label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="newProducts" checked="">
+                        <label class="form-check-label" for="newProducts"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                          Информация о новых продуктах и &ZeroWidthSpace;&ZeroWidthSpace;услугах
+                        </font></font></label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="proOffers">
+                        <label class="form-check-label" for="proOffers"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                          Маркетинговые и промо предложения
+                        </font></font></label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="securityNotify" checked="" disabled="">
+                        <label class="form-check-label" for="securityNotify"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                          Оповещения безопасности
+                        </font></font></label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-primary"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Сохранить изменения</font></font></button>
+                  </div>
+                </form>
+
+              </div>
+
+              <div class="tab-pane fade pt-3" id="profile-change-password" role="tabpanel">
+
+                <form>
+
+                  <div class="row mb-3">
+                    <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Текущий пароль</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="password" type="password" class="form-control" id="currentPassword">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="newPassword" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Новый пароль</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="newpassword" type="password" class="form-control" id="newPassword">
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Повторно введите новый пароль</font></font></label>
+                    <div class="col-md-8 col-lg-9">
+                      <input name="renewpassword" type="password" class="form-control" id="renewPassword">
+                    </div>
+                  </div>
+
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-primary"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Изменить пароль</font></font></button>
+                  </div>
+                </form>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>-->
+    </div>
+</section>
+

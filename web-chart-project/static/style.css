@@ -1,0 +1,36 @@
+.none {
+	display: none;
+}
+h1 {
+	margin: 30px;
+}
+.form_field{
+	padding: 30px;
+}
+.add_field{
+	padding: 30px;
+}
+.click_button{
+	margin-left: 30px;
+	margin-top: 15px;
+}
+
+.field_chart {
+	padding-left: 50px;
+	margin-bottom: 7px;
+}
+.field_chart_input{
+	width: 150px;
+	display: inline-block;
+	margin-right: 10px;
+}
+.field_chart_select{
+	width: 250px;
+	display: inline-block;
+}
+.add_field_button {
+	position: absolute;
+}
+.add_chart_button{
+	margin-left: 30px;
+}
